@@ -123,3 +123,34 @@ STATIC_URL = '/static/'
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+OIDC_AUTH = {
+    # Specify OpenID Connect endpoint. Configuration will be
+    # automatically done based on the discovery document found
+    # at <endpoint>/.well-known/openid-configuration
+    "OIDC_ENDPOINT": "http://example.com",
+    # Accepted audiences the ID Tokens can be issued to
+    # OIDC_AUDIENCES': ( config("SSO_API_CLIENT_ID"), ),
+    # The Claims Options can now be defined by a static string.
+    # ref: https://docs.authlib.org/en/latest/jose/jwt.html#jwt-payload-claims-validation
+    # The old OIDC_AUDIENCES option is removed in favor of this new option.
+    # `aud` is only required, when you set it as an essential claim.
+    "OIDC_CLAIMS_OPTIONS": {
+        # type
+        "typ": {
+            "values": "Bearer",
+            "essential": True,
+        },
+        # Audience
+        "aud": {
+            # Ensure audience allows access to the api bearer Only target
+            # user requires a group ownership to get this audience set
+            "values": [
+                "my_api_client_id",
+            ],
+            "essential": True,
+        },
+    },
+}
+
+OIDC_ALLOW_UNSECURED_JWT = False
